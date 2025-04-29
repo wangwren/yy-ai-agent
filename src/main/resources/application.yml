@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: yy-ai-agent
+  profiles:
+    active: local
+  ai:
+    dashscope:
+      api-key: ${DASH_SCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-max
+server:
+  port: 8123
+  servlet:
+      context-path: /api
+
+# springdoc-openapi \u63A5\u53E3\u6587\u6863\u914D\u7F6E
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.core.aiagent.controller
+# knife4j\u7684\u589E\u5F3A\u914D\u7F6E\uFF0C\u4E0D\u9700\u8981\u589E\u5F3A\u53EF\u4EE5\u4E0D\u914D
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
