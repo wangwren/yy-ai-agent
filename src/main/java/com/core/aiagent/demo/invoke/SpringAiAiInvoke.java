@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Spring AI 调用大模型
  * CommandLineRunner 在项目启动时会执行
  */
-@Component
+//@Component
 public class SpringAiAiInvoke implements CommandLineRunner {
 
     /**

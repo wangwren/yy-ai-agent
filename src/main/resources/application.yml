@@ -14,7 +14,7 @@ server:
   servlet:
       context-path: /api
 
-# springdoc-openapi \u63A5\u53E3\u6587\u6863\u914D\u7F6E
+# springdoc-openapi 接口文档配置
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -26,7 +26,7 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.core.aiagent.controller
-# knife4j\u7684\u589E\u5F3A\u914D\u7F6E\uFF0C\u4E0D\u9700\u8981\u589E\u5F3A\u53EF\u4EE5\u4E0D\u914D
+# knife4j的增强配置，不需要增强可以不配
 knife4j:
   enable: true
   setting:
