@@ -75,6 +75,20 @@
             <version>1.0.0-M6.1</version>
         </dependency>
 
+        <!-- Spring AI 结构化输出支持 -->
+        <!-- 核心 JSON Schema 生成器 -->
+        <dependency>
+            <groupId>com.github.victools</groupId>
+            <artifactId>jsonschema-generator</artifactId>
+            <version>4.38.0</version>
+        </dependency> <!-- :contentReference[oaicite:0]{index=0} -->
+        <!-- Jackson 模块：解析 @Json… 注解，支持 record 等特性 -->
+        <dependency>
+            <groupId>com.github.victools</groupId>
+            <artifactId>jsonschema-module-jackson</artifactId>
+            <version>4.38.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-community-dashscope -->
         <dependency>
             <groupId>dev.langchain4j</groupId>

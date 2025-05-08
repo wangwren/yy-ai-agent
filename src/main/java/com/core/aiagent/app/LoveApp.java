@@ -10,6 +10,8 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
@@ -61,5 +63,29 @@ public class LoveApp {
         //log.info("用户消息: {}, 返回消息: {}", message, text);
 
         return text;
+    }
+
+    /**
+     * record java16新特性
+     * 所有字段都是 private final 不可变
+     * 可用于只有属性的定义，比如 dto 等
+     */
+    record LoveReport(String title, List<String> suggestions){}
+
+    /**
+     * 结构化输出
+     */
+    public LoveReport doChat4Report(String message, String chatId) {
+
+        LoveReport loveReport = chatClient.prompt()
+                .system(SYSTEM_PROMPT + "请根据用户的消息，给出一个标题和建议列表，标题是用户名，列表是建议内容")
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 5))
+                .call()
+                .entity(LoveReport.class);
+
+        log.info("用户消息: {}, 返回消息: {}", message, loveReport);
+        return loveReport;
     }
 }
