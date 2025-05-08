@@ -1,5 +1,6 @@
 package com.core.aiagent.app;
 
+import com.core.aiagent.advisor.MyLoggerAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -32,7 +33,10 @@ public class LoveApp {
                 .defaultSystem(SYSTEM_PROMPT)
                 // 指定默认advisor(类似拦截器)，MessageChatMemoryAdvisor实现对话记忆功能,chatMemory是用来保存对话的
                 // .defaultAdvisors(...)：注册「要用记忆」的能力。
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory))
+                .defaultAdvisors(
+                        new MessageChatMemoryAdvisor(chatMemory),
+                        new MyLoggerAdvisor()
+                )
                 .build();
     }
 
@@ -54,7 +58,7 @@ public class LoveApp {
                 .chatResponse();
 
         String text = chatResponse.getResult().getOutput().getText();
-        log.info("用户消息: {}, 返回消息: {}", message, text);
+        //log.info("用户消息: {}, 返回消息: {}", message, text);
 
         return text;
     }

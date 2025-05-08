@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class LoveAppTest {
 
@@ -17,7 +15,7 @@ class LoveAppTest {
     @Test
     void testChat() {
         String chatId = UUID.randomUUID().toString();
-
+        System.out.println("chatId: " + chatId);
         // 第一轮对话
         String message = "我是一个程序员，我叫人人";
         String answer = loveApp.doChat(message, chatId);
