@@ -1,3 +1,8 @@
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+
 spring:
   application:
     name: yy-ai-agent
@@ -9,10 +14,23 @@ spring:
       chat:
         options:
           model: qwen-max
-server:
-  port: 8123
-  servlet:
-      context-path: /api
+  datasource:
+    url: jdbc:mysql://localhost:3306/your_database?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=Asia/Shanghai
+    username: your_username
+    password: your_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
+      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+
 
 # springdoc-openapi 接口文档配置
 springdoc:

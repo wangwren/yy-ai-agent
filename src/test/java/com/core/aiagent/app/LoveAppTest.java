@@ -41,4 +41,14 @@ class LoveAppTest {
         LoveApp.LoveReport loveReport = loveApp.doChat4Report(message, chatId);
         Assertions.assertNotNull(loveReport);
     }
+
+    @Test
+    void testChatMemory() {
+        String chatId = "804e52bf-aa75-4a07-bb2e-ec93f47f4e1e";
+        System.out.println("chatId: " + chatId);
+        // 第一轮对话
+        String message = "我是谁，我的另一半叫什么";
+        String answer = loveApp.doChat(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }
