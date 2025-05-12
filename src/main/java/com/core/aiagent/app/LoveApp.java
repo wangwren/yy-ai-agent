@@ -6,10 +6,12 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +26,17 @@ public class LoveApp {
 
     private ChatClient chatClient;
 
-    // mysql对话记忆
+    /**
+     * mysql对话记忆
+     */
     @Autowired
     private MyBatisPlusChatMemory chatMemory;
+
+    /**
+     * 向量存储，检索
+     */
+    @Resource
+    private VectorStore loveAppVectorStore;
 
     private static final String SYSTEM_PROMPT = "扮演深耕恋爱心理领域的专家。开场向用户表明身份，告知用户可倾诉恋爱难题。" +
             "围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；" +
@@ -96,5 +106,26 @@ public class LoveApp {
 
         log.info("用户消息: {}, 返回消息: {}", message, loveReport);
         return loveReport;
+    }
+
+    /**
+     * 向量检索
+     * 查询增强原理：
+     *  向量数据库存储着AI模型本身不知道的数据，当用户问题发送给AI模型时，
+     *  QuestionAnswerAdvisor会查询向量数据库，获取与用户问题相关的文档。
+     *  然后从向量数据库返回的响应会被附加到用户文本中，为AI模型提供上下文，帮助AI模型生成回答
+     */
+    public String doChat4Rag(String message, String chatId) {
+
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 5))
+                // QuestionAnswerAdvisor 查询增强，在调用大模型前会检索loveAppVectorStore中的数据，拼接到用户的Prompt中
+                .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))
+                .call()
+                .chatResponse();
+
+        return chatResponse.getResult().getOutput().getText();
     }
 }

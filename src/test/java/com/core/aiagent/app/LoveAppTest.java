@@ -51,4 +51,14 @@ class LoveAppTest {
         String answer = loveApp.doChat(message, chatId);
         Assertions.assertNotNull(answer);
     }
+
+    @Test
+    void doChat4Rag() {
+        String chatId = UUID.randomUUID().toString();
+        System.out.println("chatId: " + chatId);
+        // 第一轮对话，已经在md文档中加上了这个问题相关的信息
+        String message = "我的女朋友叫什么，我们准备什么时候结婚";
+        String answer = loveApp.doChat4Rag(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }
