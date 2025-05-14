@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
@@ -37,6 +38,9 @@ public class LoveApp {
      */
     @Resource
     private VectorStore loveAppVectorStore;
+
+    @Resource
+    private Advisor loveAppRagCloudAdvisor;
 
     private static final String SYSTEM_PROMPT = "扮演深耕恋爱心理领域的专家。开场向用户表明身份，告知用户可倾诉恋爱难题。" +
             "围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；" +
@@ -123,6 +127,24 @@ public class LoveApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 5))
                 // QuestionAnswerAdvisor 查询增强，在调用大模型前会检索loveAppVectorStore中的数据，拼接到用户的Prompt中
                 .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))
+                .call()
+                .chatResponse();
+
+        return chatResponse.getResult().getOutput().getText();
+    }
+
+    /**
+     * 向量检索
+     * 使用阿里灵积百炼的云知识库
+     * 文档都已经上传到云知识库中了，阿里云也自动给做了向量的存储，这一点是跟本地向量存储有区别的
+     */
+    public String doChat4RagCloud(String message, String chatId) {
+
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 5))
+                .advisors(loveAppRagCloudAdvisor)
                 .call()
                 .chatResponse();
 
