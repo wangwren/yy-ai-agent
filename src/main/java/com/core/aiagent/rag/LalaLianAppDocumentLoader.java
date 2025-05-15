@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class LoveAppDocumentLoader {
+public class LalaLianAppDocumentLoader {
 
     /**
      * 资源加载器,支持读取多个文件，支持通配符
@@ -27,7 +27,7 @@ public class LoveAppDocumentLoader {
     /**
      * 构造方法注入
      */
-    public LoveAppDocumentLoader(ResourcePatternResolver resourcePatternResolver) {
+    public LalaLianAppDocumentLoader(ResourcePatternResolver resourcePatternResolver) {
         this.resourcePatternResolver = resourcePatternResolver;
     }
 
@@ -37,7 +37,7 @@ public class LoveAppDocumentLoader {
     public List<Document> loadMarkdowns() {
         List<Document> list = new ArrayList<>();
         try {
-            Resource[] resources = resourcePatternResolver.getResources("classpath:document/demo/*.md");
+            Resource[] resources = resourcePatternResolver.getResources("classpath:document/lalalian/*.md");
             for (Resource resource : resources) {
                 String filename = resource.getFilename();
                 MarkdownDocumentReaderConfig config = MarkdownDocumentReaderConfig.builder()
