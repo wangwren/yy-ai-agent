@@ -14,11 +14,25 @@ spring:
       chat:
         options:
           model: qwen-max
+    # 向量存储配置,自动注入时会使用默认配置，该项目使用手动配置,不自动注入
+    vectorstore:
+      pgvector:
+        # 以下属性可选，或通过 @Value 注入
+        initialize-schema: true
+        dimensions: 1536
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
   datasource:
     url: jdbc:mysql://localhost:3306/your_database?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=Asia/Shanghai
     username: your_username
     password: your_password
     driver-class-name: com.mysql.cj.jdbc.Driver
+  # —— PostgreSQL（向量库，手动前缀 spring.pg.datasource） ——
+  pg:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/yyai_pg?useSSL=false
+      username: pg_user
+      password: pg_password
 
 
 mybatis-plus:

@@ -66,10 +66,14 @@ class LoveAppTest {
     void doChat4RagCloud() {
         String chatId = UUID.randomUUID().toString();
         System.out.println("chatId: " + chatId);
-        // 第一轮对话，已经在md文档中加上了这个问题相关的信息，调用云知识库
-        String message = "我的女朋友叫什么，我们准备什么时候结婚";
-        // 执行结果，根据ai返回的内容，明显感觉到云知识库比本地的更好，不会多加其他的内容
-        String answer = loveApp.doChat4RagCloud(message, chatId);
+        // 第一轮对话
+        String message = "我是一个程序员，我叫人人";
+        String answer = loveApp.doChat4RagPgVector(message, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 第二轮对话
+        message = "我的女朋友叫什么，我又是谁";
+        answer = loveApp.doChat4RagPgVector(message, chatId);
         Assertions.assertNotNull(answer);
     }
 }

@@ -42,6 +42,12 @@ public class LoveApp {
     @Resource
     private Advisor loveAppRagCloudAdvisor;
 
+    /**
+     * 向量存储，pgVector向量数据库
+     */
+    @Resource
+    private VectorStore pgVectorStore;
+
     private static final String SYSTEM_PROMPT = "扮演深耕恋爱心理领域的专家。开场向用户表明身份，告知用户可倾诉恋爱难题。" +
             "围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；" +
             "恋爱状态询问沟通、习惯差异引发的矛盾；已婚状态询问家庭责任与亲属关系处理的问题。" +
@@ -145,6 +151,30 @@ public class LoveApp {
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 5))
                 .advisors(loveAppRagCloudAdvisor)
+                .call()
+                .chatResponse();
+
+        return chatResponse.getResult().getOutput().getText();
+    }
+
+    /**
+     * 向量检索
+     * 查询增强原理：
+     *  向量数据库存储着AI模型本身不知道的数据，当用户问题发送给AI模型时，
+     *  QuestionAnswerAdvisor会查询向量数据库，获取与用户问题相关的文档。
+     *  然后从向量数据库返回的响应会被附加到用户文本中，为AI模型提供上下文，帮助AI模型生成回答
+     * 存储在pgVector向量数据库中
+     */
+    public String doChat4RagPgVector(String message, String chatId) {
+
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 5))
+                // QuestionAnswerAdvisor 查询增强，在调用大模型前会检索pgVectorStore中的数据，拼接到用户的Prompt中
+                .advisors(new QuestionAnswerAdvisor(pgVectorStore))
+                // MySQL存储对话记忆
+                .advisors(new MessageChatMemoryAdvisor(chatMemory))
                 .call()
                 .chatResponse();
 
