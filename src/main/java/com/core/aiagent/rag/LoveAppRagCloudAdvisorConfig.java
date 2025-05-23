@@ -31,6 +31,7 @@ public class LoveAppRagCloudAdvisorConfig {
 
         // 返回基于云知识库的检索增强RetrievalAugmentationAdvisor
         return RetrievalAugmentationAdvisor.builder()
+                // 指定文档检索器
                 .documentRetriever(dashScopeDocumentRetriever)
                 .build();
     }
