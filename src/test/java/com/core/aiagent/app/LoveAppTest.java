@@ -1,16 +1,28 @@
 package com.core.aiagent.app;
 
 import cn.hutool.core.lang.UUID;
+import com.core.aiagent.rag.LoveAppDocumentLoader;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 class LoveAppTest {
 
     @Resource
     private LoveApp loveApp;
+
+    @Resource
+    private PgVectorStore pgVectorStore;
+
+    @Resource
+    private LoveAppDocumentLoader loveAppDocumentLoader;
+
 
     @Test
     void testChat() {
@@ -64,6 +76,26 @@ class LoveAppTest {
 
     @Test
     void doChat4RagCloud() {
+        String chatId = UUID.randomUUID().toString();
+        System.out.println("chatId: " + chatId);
+        // 第一轮对话
+        String message = "我是一个程序员，我叫人人";
+        String answer = loveApp.doChat4RagCloud(message, chatId);
+        Assertions.assertNotNull(answer);
+
+        // 第二轮对话
+        message = "我的女朋友叫什么，我又是谁";
+        answer = loveApp.doChat4RagCloud(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
+
+    @Test
+    void doChat4RagPgVector() {
+        // 添加文档至PgVectorStore向量数据库
+        List<Document> documents = loveAppDocumentLoader.loadMarkdowns();
+        pgVectorStore.doAdd(documents);
+
+
         String chatId = UUID.randomUUID().toString();
         System.out.println("chatId: " + chatId);
         // 第一轮对话
