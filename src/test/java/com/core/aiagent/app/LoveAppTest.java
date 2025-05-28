@@ -108,4 +108,20 @@ class LoveAppTest {
         answer = loveApp.doChat4RagPgVector(message, chatId);
         Assertions.assertNotNull(answer);
     }
+
+    @Test
+    void doChat4Tools() {
+
+        // 测试联网搜索问题的答案
+        testMessage("周末想带女朋友去上海约会，推荐几个适合情侣的小众打卡地？");
+
+        // 测试文件操作：保存用户档案
+        testMessage("保存我的恋爱档案为文件");
+    }
+
+    private void testMessage(String message) {
+        String chatId = UUID.randomUUID().toString();
+        String answer = loveApp.doChat4Tools(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }

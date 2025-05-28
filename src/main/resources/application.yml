@@ -63,3 +63,7 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+# searchApi 配置
+search-api:
+  key: your key
